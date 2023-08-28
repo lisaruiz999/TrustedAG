@@ -1,0 +1,101 @@
+pip install flask
+from flask import Flask, render_template, request, redirect, url_for
+
+app = Flask(__name__)
+
+# Sample data for trading reviews
+reviews = []
+
+@app.route('/')
+def index():
+    return render_template('index.html', reviews=reviews)
+
+@app.route('/submit', methods=['POST'])
+def submit_review():
+    name = request.form.get('name')
+    review = request.form.get('review')
+    
+    if name and review:
+        reviews.append({'name': name, 'review': review})
+    
+    return redirect(url_for('index'))
+
+if __name__ == '__main__':
+    app.run(debug=True)
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TrustedAG Opinie App</title>
+    <link rel="stylesheet" type="text/css" href="static/style.css">
+</head>
+<body>
+    <h1>Welcome to TrustedAG Opinie App</h1>
+    
+    <h2>Submit a Review</h2>
+    <form action="/submit" method="post">
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name"><br><br>
+        
+        <label for="review">Review:</label><br>
+        <textarea id="review" name="review" rows="4" cols="50"></textarea><br><br>
+        
+        <input type="submit" value="Submit">
+    </form>
+    
+    <h2>Reviews</h2>
+    <ul>
+        {% for review in reviews %}
+        <li>
+            <strong>{{ review.name }}</strong><br>
+            {{ review.review }}
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+h1 {
+    color: #333;
+}
+
+h2 {
+    color: #666;
+    margin-top: 20px;
+}
+
+form {
+    width: 50%;
+    margin-top: 10px;
+}
+
+label, textarea {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input[type="text"], textarea {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ccc;
+}
+
+input[type="submit"] {
+    background-color: #333;
+    color: #fff;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    margin-bottom: 15px;
+}
